@@ -10,7 +10,7 @@ Now, having generated a high-quality set of mapped read pairs, we can proceed to
 
 1. Run **VarScan somatic** with the following parameters:
 
-   * *"Will you selct a reference genome from your history or use a built-in genome?"* :  <span style='color:red'>==Use a built-in genome==</span> 
+   * *"Will you select a reference genome from your history or use a built-in genome?"* :  <mark>sumn</mark>
 
      * *"reference genome"*: <span style='color:red'>==Human: hg19==</span> (or a similarly named choice)
 
