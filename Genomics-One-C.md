@@ -4,26 +4,26 @@
 
 ## Introduction
 
-Cancer cells have deviated from the normal (germline) genome of the organism by acquiring and selecting for a set of mutations which enable them to grow rapidly and invasively, to resist regulation and/or possibly to metastasize. These changes can be simple single-base mutations to more complex genomic gain, loss or structural change events. The changes can then trigger the cancer process by modifying the function of a protein (e.g. disabling a tumor suppressor gene, or activating an oncogene), silencing a gene’s transcription or affecting a gene’s transcriptional affinity.
+Cancer cells have deviated from the organism's normal (germline) genome by acquiring and selecting for a set of mutations that allow them to grow rapidly and invasively, resist regulation, and possibly metastasize. These changes can range from simple single-base mutations to more complex events involving genomic gain, loss, or structural change. Modifying the function of a protein (e.g., disabling a tumor suppressor gene or activating an oncogene), silencing a gene's transcription, or affecting a gene's transcriptional affinity can then initiate the cancer process.
 
-Many studies have elected to sample and sequence both the tumor tissue with a normal genomic profile from the same individual in order to separate the acquired (somatic) mutations from the malignant tissue. However, this solution is not adequate and simple as comparison being done because even in healthy tissues, there are many thousands of variants compared to the reference genome. The reason for this being that every individual inherit  a unique pattern of many variants from their parents.
+Many studies have chosen to sample and sequence both tumor tissue and normal genomic profiles from the same individual in order to distinguish acquired (somatic) mutations from malignant tissue. However, this solution is insufficient and as simple as the comparison being performed because there are many thousands of variants in healthy tissues compared to the reference genome. The reason for this is that each person inherits a unique pattern with many variants from their parents.
 
-> A major difference between ***germline variants*** and ***somatic variants*** is that: germline variants is inherited and present in the carrier's germline while the somatic variants are acquired from the environment, hence cannot be transmitted to the offspring.
+> The primary distinction between ***germline variants*** and ***somatic variants*** is that germline variants are inherited and present in the carrier's germline, whereas somatic variants are acquired from the environment and thus cannot be passed down to the offspring.
 
-If this is the case, it can be said that healthy and tumor tissues could possess germline variants while tumor tissues are the only ones with the somatic variants. This is why comparison between a normal cell and a tumor cell is the only way to distinguish between the two types of variant.
+If this is the case, healthy and tumor tissues may both have germline variants, while tumor tissues are the only ones with somatic variants. This is why comparing a normal cell to a tumor cell is the only way to tell the difference between the two types of variant.
 
-Furthermore, besides acquiring somatic variants, tumor tissues also could gain chromosomal copies of heterozygous germline variants  i.e. homozygous state (in the case of a duplication of one allelic copy accompanied by loss of the other) or lose i.e. hemizygous state (if one allele is simply dropped)
+Furthermore, in addition to acquiring somatic variants, tumor tissues may gain chromosomal copies of heterozygous germline variants, i.e. homozygous state (duplication of one allelic copy accompanied by loss of the other), or lose, i.e. hemizygous state (if one allele is simply dropped).
 
-**Note: only one of the two original alleles persists in the tumor.**
+**Note: Only one of the two original alleles persists in the tumor.**
 
-This concept is called *loss of heterozygosity* (LOH). The detection of LOH events, again, is dependent on a comparison of tumor and normal tissue data.
+This is known as *loss of heterozygozity* (LOH). Again, the detection of LOH events is based on a comparison of tumor and normal tissue data.
 
-**Genomics-One-C** is set out to:
+**Genomics-One-C's** tutorial is set out to:
 
-- Identify somatic and germline variants, as well as variants affected by LOH, from a tumor and a normal sample of the same patient.
-- Report the variant sites, and the genes affected by them, annotated with the content of general human genetic and cancer-specific databases.
+- Identify somatic and germline variants, as well as LOH variants, in a tumor and a normal sample from the same patient.
+- Annotate the variant sites and the genes affected by them with content from general human genetic and cancer-specific databases.
 
-We are hoping this provide the insight into the genetic events driving tumor formation and growth in patient, and might be of prognostic and even therapeutic value by revealing variants known to affect drug resistance/sensitivity, tumor aggressiveness, *etc*.
+We hope that this will provide insight into the genetic events that are driving tumor formation and growth in patients, as well as have prognostic and even therapeutic value by revealing variants known to affect drug resistance/sensitivity, tumor aggressiveness, *etc*.
 
 #### **Agenda**
 
@@ -108,7 +108,7 @@ We are hoping this provide the insight into the genetic events driving tumor for
 
    > :bulb:**Tip: Importing data from a data library**
    >
-   >    	As an alternative to uploading the data from a URL or your computer, the files may also have been made available from a shared data _library_:
+   > As an alternative to uploading the data from a URL or your computer, the files may also have been made available from a shared data _library_:
    >
    > * Go into _**Shared data**_ (top panel) then _**Data libraries**_
    > * Find the correct folder (ask your instructor)
@@ -166,9 +166,7 @@ We are hoping this provide the insight into the genetic events driving tumor for
 
    > **Shortcut**
    >
-   > ```
    > You can skip this step if the Galaxy server you're using has a hg19 version of the human reference genome with prebuilt indexes for bwa-mem and samtools (check the tools Map with BWA-MEM tool and VarScan Somatic tool to see if a hg19 version is listed as an option under "(Using) reference genome").
-   > ```
 
    Alternatively, load the dataset from a shared data library.
 
@@ -182,11 +180,11 @@ We are hoping this provide the insight into the genetic events driving tumor for
 
 # Quality control and mapping of NGS reads
 
-It is imperative to ensure that the data used for analysis is of good quality prior to the commencement of the analysis. The quality control phase involves the identification and trimming of low-quality parts and/or ditching of poor quality reads that may be present in the input data so as to avoid spurious variant calls. Here, we ensure that all the sequencing reads used meet some minimal quality criteria.
+Prior to beginning the analysis, it is critical to ensure that the data used for analysis is of high quality. The quality control phase entails identifying and trimming low-quality parts as well as ditching low-quality reads that may be present in the input data to avoid spurious variant calls. In this step, we ensure that all sequencing reads used meet some basic quality criteria.
 
 > ##### More on quality control and mapping
 >
-> If you would like to explore the topics of quality control and read mapping in detail, you should take a look at the separate [Quality Control](https://training.galaxyproject.org/training-material/topics/sequence-analysis/tutorials/quality-control/tutorial.html) and [Mapping](https://training.galaxyproject.org/training-material/topics/sequence-analysis/tutorials/mapping/tutorial.html) tutorials. Here, we will only illustrate the concrete steps necessary for quality control and read mapping of our particular datasets.
+> If you want to learn more about quality control and mapping, check out the [Quality Control](https://training.galaxyproject.org/training-material/topics/sequence-analysis/tutorials/quality-control/tutorial.html) and [Mapping](https://training.galaxyproject.org/training-material/topics/sequence-analysis/tutorials/mapping/tutorial). We will only show the concrete steps required for quality control and read mapping of our specific datasets in this section.
 
 
 
@@ -217,7 +215,7 @@ It is imperative to ensure that the data used for analysis is of good quality pr
 
 ## Read trimming and filtering
 
-We will apply read trimming and filtering albeit the relatively good overall quality of the raw reads to see if we can improve things still a bit, but also to demonstrate the general concept.
+Despite the relatively good overall quality of the raw reads, we will apply read trimming and filtering to see if we can improve things further, but also to demonstrate the general concept.
 
 #### **Hands-on: Read trimming and filtering of the normal tissue reads**
 
@@ -266,8 +264,8 @@ We will apply read trimming and filtering albeit the relatively good overall qua
 
    > Running this job will generate four output datasets:
    >
-   > - *two for the trimmed forward and reverse reads that still have a proper mate in the other dataset*.
-   > - *two more datasets of orphaned forward and reverse reads, for which the corresponding mate got dropped because of insufficient length after trimming; when you inspect these two files, however, you should find that they are empty because none of our relatively high quality reads got trimmed that excessively. You can delete the two datasets to keep your history more compact*.
+   > - *two for the trimmed forward and reverse reads with a proper mate in the other dataset*
+   > - *two more datasets of orphaned forward and reverse reads, for which the corresponding mate was dropped due to insufficient length after trimming; however, when you inspect these two files, you should find that they are empty because none of our relatively high quality reads were excessively trimmed. You can delete the two datasets to make your history smaller*.
 
 
 
@@ -303,7 +301,7 @@ We will apply read trimming and filtering albeit the relatively good overall qua
      - *“Auto-assign”*: <span style='color:red'>`No`</span>
        - *“Read group sample name (SM)”*: <span style='color:red'>`Normal`</span>
 
-   > **Tip**: *In general, you are free to choose ID and SM values to your liking, but the ID should unambiguously identify the sequencing run that produced the reads, while the SM value should identify the biological sample.*
+   > **Tip**: *In general, you are free to choose your own ID and SM values, but the ID should unambiguously identify the sequencing run that generated the reads, while the SM value should identify the biological sample.*
 
 2. Use **Map with BWA-MEM** to map the reads from the **tumor tissue** sample,      
 
@@ -331,11 +329,11 @@ We will apply read trimming and filtering albeit the relatively good overall qua
 
 # Mapped reads postprocessing
 
-To ensure that we base our variant analysis only on unambiguous, high-quality read mappings we will do some postprocessing next.
+We will then perform some postprocessing to ensure that our variant analysis is based solely on unambiguous, high-quality read mappings.
 
 ## Filtering on mapped reads properties
 
-To produce new filtered BAM datasets with only those reads retained that have been mapped to the reference successfully, have a minimal mapping quality of 1, and for which the mate read has also been mapped:
+To generate new filtered BAM datasets with only reads retained that have been successfully mapped to the reference, have a minimum mapping quality of 1, and have the mate read also mapped:
 
 ### Hands-on: Filtering for mapping status and quality
 
@@ -361,9 +359,9 @@ To produce new filtered BAM datasets with only those reads retained that have be
              - *“Select BAM property to filter on”*: <span style='color:red'>`isMateMapped`</span>
                - *“Select reads with mapped mate”*: <span style='color:red'>`Yes`</span>
 
-When you configure multiple filters within one condition, reads have to pass *all* the filters to be retained in the output. The above settings, thus, retain only read pairs, for which both mates are mapped.
+When multiple filters are configured within a single condition, reads must pass *all* of the filters in order to be retained in the output. As a result, the above settings retain only read pairs for which both mates are mapped.
 
-Note that filtering for a minimal mapping quality is not strictly necessary. Most variant callers (including **VarScan somatic**, which we will be using later) have an option for using only reads above a certain mapping quality. In this section, however, we are going to process the retained reads further rather extensively so it pays off in terms of performance to eliminate reads we do not plan to use at an early step.
+It should be noted that filtering for the best mapping quality is not strictly necessary. Most variant callers (including **VarScan somatic**, which we will use later) allow us to use only reads with mapping quality above a certain threshold. However, in this section, we will process the retained reads in greater depth, so it will pay off in terms of performance to eliminate reads we do not intend to use at an early stage.
 
 *“Would you like to set rules?”*: <span style='color:red'>`No`</span>
 
@@ -379,7 +377,7 @@ Note that filtering for a minimal mapping quality is not strictly necessary. Mos
 
 ### Hands-on: Remove duplicates
 
-1. Run **RmDup** Tool: with the following parameters:
+1. Run **RmDup** Tool with the following parameters:
    - *“BAM file”*: filtered reads datasets from the normal *and* the tumor tissue data; the outputs of **Filter SAM or BAM**
    - *“Is this paired-end or single end data”*: <span style='color:red'>`BAM is paired-end`</span>
    - *“Treat as single-end”*: <span style='color:red'>`No`</span>
@@ -390,7 +388,7 @@ Note that filtering for a minimal mapping quality is not strictly necessary. Mos
 
 ### Hands-on: Left-align
 
-1. Run **BamLeftAlign** Tool: with the following parameters:
+1. Run **BamLeftAlign** Tool with the following parameters:
    - *“Choose the source for the reference genome”*: <span style='color:red'>`Locally cached`</span> 
      - *“BAM dataset to re-align”*: your filtered and deduplicated reads datasets from the normal *and* the tumor tissue data; the outputs of **RmDup**    
      - *“Using reference genome”*: <span style='color:red'>`Human: hg19`</span> (or a similarly named choice)
@@ -411,7 +409,7 @@ Note that filtering for a minimal mapping quality is not strictly necessary. Mos
 
 ### Hands-on: Recalibrate read quality scores
 
-1. Run **CalMD** Tool:with the following parameters:
+1. Run **CalMD** Tool with the following parameters:
 
    - *“BAM file to recalculate”*: the left-aligned datasets from the normal and the tumor tissue data; the outputs of **BamLeftAlign**
 
@@ -430,13 +428,11 @@ Note that filtering for a minimal mapping quality is not strictly necessary. Mos
 
    - *“Do you also want BAQ (Base Alignment Quality) scores to be calculated?”*: <span style='color:red'>`No`</span>
 
-     The *VarScan somatic* tool that we are going to use for calling variants at the next step is typically used in combination with unadjusted base quality scores because the general opinion is that the base quality downgrades performed by *CalMD* and other tools from the *samtools* suite of tools are too severe for *VarScan* to retain good sensitivity. We are sticking with this practice in this tutorial.
+     The *VarScan* somatic tool, which we will use to call variants in the next step, is typically used in conjunction with unadjusted base quality scores because it is widely assumed that the base quality downgrades performed by *CalMD* and other tools in the *samtools* suite of tools are too severe for *VarScan* to retain good sensitivity. In this tutorial, we will continue with this practice.
 
      > **Using adjusted base quality scores**
      >
-     > If, for your own data, you would like to experiment with adjusted base quality scores, it is important to understand that *VarScan somatic* will only make use of the adjusted scores if they are incorporated directly into the read base qualities of a BAM input dataset, but not if they are written to the dataset separately.
-     >
-     > - Hence, should you ever decide to use:
+     > - If you want to experiment with adjusted base quality scores for your own data, keep in mind that *VarScan somatic* will only use them if they are incorporated directly into the read base qualities of a BAM input dataset, not if they are written to the dataset separately. Hence, should you ever decide to use:
      >
      >   - *“Do you also want BAQ (Base Alignment Quality) scores to be calculated?”*: <span style='color:red'>`Yes, run BAQ calculation`</span> 
      >
@@ -444,9 +440,9 @@ Note that filtering for a minimal mapping quality is not strictly necessary. Mos
      >
      >     - *“Use BAQ to cap read base qualities”*: <span style='color:red'>`Yes`</span>
      >
-     >   Please also note that BAQ scores are quite expensive to calculate so be prepared to see a substantial (up to 10x!) increase in job run time  when enabling it.
+     >   Please keep in mind that BAQ scores are quite expensive to calculate, so expect a significant (up to 10x!) increase in job run time when you enable it.
      >
-
+     
      
 
    - *“Additional options”*: <span style='color:red'>`Advanced options`</span>
@@ -455,7 +451,7 @@ Note that filtering for a minimal mapping quality is not strictly necessary. Mos
 
      - *“Coefficient to cap mapping quality of poorly mapped reads”*: <span style='color:red'>`50`</span>
 
-       This last setting is the real reason why we use CalMD at this point. It is an empirical, but well-established finding that the mapping quality of reads mapped with *bwa* should be capped this way before variant calling.
+       This last option is the main reason we're using CalMD at this point. The mapping quality of reads mapped with *bwa* should be capped in this way before variant calling, according to empirical but well-established findings.
 
 > This will, once more, produce two new datasets, one for each of the normal and tumor data.
 
@@ -463,7 +459,7 @@ Note that filtering for a minimal mapping quality is not strictly necessary. Mos
 
 ## Refilter reads based on mapping quality
 
-During recalibration of read mapping qualities **CalMD** may have set some mapping quality scores to 255. This special value is reserved for *undefined* mapping qualities and is used by the tool when a recalibrated mapping quality would drop below zero. In other words, a value of 255 does not indicate a particularly good mapping score, but a really poor one. To remove such reads from the data:
+**CalMD** may have set some mapping quality scores to 255 during read mapping quality recalibration. This special value is reserved for *undefined* mapping qualities and is used by the tool when a recalibrated mapping quality is less than zero. In other words, a value of 255 indicates a really bad mapping score, not a particularly good one. To remove such reads from the data, do the following:
 
 ### Hands-on: Eliminating reads with undefined mapping quality
 
@@ -482,7 +478,7 @@ During recalibration of read mapping qualities **CalMD** may have set some mappi
 
 # Variant Calling and Classification
 
-Now, having generated a high-quality set of mapped read pairs, we can proceed to variant calling. On the galaxy server we employ the use of the **VarScan somatic** tool, which is a dedicated solution for somatic variant calling.
+We can now proceed to variant calling after we have generated a high-quality set of mapped read pairs. We use the **VarScan somatic** tool on the galaxy server, which is a dedicated solution for somatic variant calling.
 
 ### Hands-on: Variant Calling and Classification
 
@@ -516,11 +512,11 @@ Now, having generated a high-quality set of mapped read pairs, we can proceed to
 
      * *"Minimum base quality"*: <span style='color:red'>`28`</span> 
 
-       We have seen, at the quality control step, that our sequencing data is of really good quality, and we have chosen not to downgrade base qualities at the quality scores recalibration step above, so we can increase the base quality required at any given position without throwing away too much of our data.
+       We discovered that our sequencing data is of very high quality during the quality control step, and we chose not to downgrade base qualities during the quality scores recalibration step above, so that we can increase the base quality required at any given position without discarding too much of our data.
 
      * *"Minimum mapping quality"*: <span style='color:red'>`1`</span> 
 
-       During post-processing, we have filtered our reads for ones with a mapping quality of at least one, but **CalMD** may have lowered some mapping qualities to zero afterwards.
+       We filtered our reads for those with a mapping quality of at least one during post-processing, but **CalMD** may have reduced some mapping qualities to zero afterwards.
 
      Leave all other settings in this section at their default values.
    
@@ -528,14 +524,14 @@ Now, having generated a high-quality set of mapped read pairs, we can proceed to
 
 # Conclusion
 
-In addition to merely calling variants, *somatic variant calling* tries to distinguish *somatic mutations*, which are private to tumor tissue, from *germline* mutations, that are shared by tumor and healthy tissue, and *loss-of-heterozygosity* events, which involve the loss, from tumor tissue, of one of two alleles found at a biallelic site in healthy tissue.
+In addition to simply calling variants, *somatic variant calling* attempts to distinguish *somatic mutations*, which are unique to tumor tissue, from *germline* mutations, which are shared by tumor and healthy tissue, and *loss-of-heterozygozygosity* events, which involve the loss of one of two alleles found at a biallelic site in healthy tissue, from tumor tissue.
 
-Dedicated somatic variant callers can perform this classification on statistical grounds, but the interpretation of any list of variants (somatic, germline or LOH) also depends crucially on rich genetic and cancer-specific variant and gene annotations.
+Dedicated somatic variant callers can perform this classification based on statistics, but the interpretation of any list of variants (somatic, germline, or LOH) is also critically dependent on rich genetic and cancer-specific variant and gene annotations.
 
 > Some **Key points** to consider:
 >
-> * Follow best practices for read mapping, quality control and mapped reads post-processing to minimize false-positive variant calls.
-> * Use a dedicated somatic variant caller to call variants and to classify them into somatic, germline and LOH event variants on statistical grounds.
-> * Annotations and queries based on variant properties add relevance to variant and gene reports.
-> * A framework like **GEMINI** is very helpful for managing, annotating and querying lists of variants in a flexible way.
-> * Prefer public, free annotation sources to foster reproducibility and information sharing.
+> * To reduce false-positive variant calls, use best practices for read mapping, quality control, and mapped reads post-processing.
+> * Call variants and classify them statistically into somatic, germline, and LOH event variants using a dedicated somatic variant caller.
+> * Annotations and queries based on variant properties improve the usefulness of variant and gene reports.
+> * **GEMINI** is a very useful framework for managing, annotating, and querying lists of variants in a flexible manner.
+> * To encourage reproducibility and information sharing, prefer public, free annotation sources.
