@@ -40,7 +40,7 @@ We are hoping this provide the insight into the genetic events driving tumor for
 >    2. [Removing duplicate reads](#removing-duplicate-reads)
 >    3. [Left-align reads around indels](#left-align-reads-around-indels)
 >    4. [Recalibrate read mapping qualities](#recalibrate-read-mapping-qualities)
->    5. [Refilter reads based on mapping qualities](#refilter-reads-based-on-mapping-qualities)
+>    5. [Refilter reads based on mapping quality](#refilter-reads-based-on-mapping-quality)
 > 4. [Variant calling and classification](#variant-calling-and-classification)
 > 5. Variant annotation and reporting
 >    1. Get data
