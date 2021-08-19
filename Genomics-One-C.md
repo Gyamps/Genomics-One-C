@@ -53,7 +53,7 @@ We hope that this will provide insight into the genetic events that are driving 
 
 # Data Preparation
 
-> We must first upload and prepare some input data for analysis. The sequencing reads we'll be looking at come from real-world data from a cancer patient's tumor and normal tissue samples. However, for the sake of analysis speed, the original data has been downsampled to include only reads from human chromosomes 5, 12, and 17.
+We must first upload and prepare some input data for analysis. The sequencing reads we'll be looking at come from real-world data from a cancer patient's tumor and normal tissue samples. However, for the sake of analysis speed, the original data has been downsampled to include only reads from human chromosomes 5, 12, and 17.
 
 
 
