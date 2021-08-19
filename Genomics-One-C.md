@@ -1,5 +1,55 @@
 [toc]
 
+# Identification of somatic and germline variants from tumor and normal sample pairs
+
+## Introduction
+
+Cancer cells have deviated from the normal (germline) genome of the organism by acquiring and selecting for a set of mutations which enable them to grow rapidly and invasively, to resist regulation and/or possibly to metastasize. These changes can be simple single-base mutations to more complex genomic gain, loss or structural change events. The changes can then trigger the cancer process by modifying the function of a protein (e.g. disabling a tumor suppressor gene, or activating an oncogene), silencing a gene’s transcription or affecting a gene’s transcriptional affinity.
+
+Many studies have elected to sample and sequence both the tumor tissue with a normal genomic profile from the same individual in order to separate the acquired (somatic) mutations from the malignant tissue. However, this solution is not adequate and simple as comparison being done because even in healthy tissues, there are many thousands of variants compared to the reference genome. The reason for this being that every individual inherit  a unique pattern of many variants from their parents.
+
+> A major difference between ***germline variants*** and ***somatic variants*** is that: germline variants is inherited and present in the carrier's germline while the somatic variants are acquired from the environment, hence cannot be transmitted to the offspring.
+
+If this is the case, it can be said that healthy and tumor tissues could possess germline variants while tumor tissues are the only ones with the somatic variants. This is why comparison between a normal cell and a tumor cell is the only way to distinguish between the two types of variant.
+
+Furthermore, besides acquiring somatic variants, tumor tissues also could gain chromosomal copies of heterozygous germline variants  i.e. homozygous state (in the case of a duplication of one allelic copy accompanied by loss of the other) or lose i.e. hemizygous state (if one allele is simply dropped)
+
+**Note: only one of the two original alleles persists in the tumor.**
+
+This concept is called *loss of heterozygosity* (LOH). The detection of LOH events, again, is dependent on a comparison of tumor and normal tissue data.
+
+**Genomics-One-C** is set out to:
+
+- Identify somatic and germline variants, as well as variants affected by LOH, from a tumor and a normal sample of the same patient.
+- Report the variant sites, and the genes affected by them, annotated with the content of general human genetic and cancer-specific databases.
+
+We are hoping this provide the insight into the genetic events driving tumor formation and growth in patient, and might be of prognostic and even therapeutic value by revealing variants known to affect drug resistance/sensitivity, tumor aggressiveness, *etc*.
+
+#### **Agenda**
+
+> In this tutorial, we will cover:
+>
+> 1. [Data Preparation](#1-Introduction-of-somatic-and-germline-variants-from-tumor-and-normal-sample-pairs)
+>    1. Get data
+> 2. [Quality control and mapping of NGS reads](#4-Quality-control-and-mapping-of-NGS-reads)
+>    1. [Quality control](#5-Quality-control)
+>    2. Read trimming and filtering
+>    3. Read mapping
+> 3. [Mapped reads postprocessing](#1-Introduction-of-somatic-and-germline-variants-from-tumor-and-normal-sample-pairs)
+>    1. Filtering on mapped reads properties
+>    2. Removing duplicate reads
+>    3. Left-align reads around indels
+>    4. Recalibrate read mapping qualities
+>    5. Refilter reads based on mapping qualities
+> 4. Variant calling and classification
+> 5. Variant annotation and reporting
+>    1. Get data
+>    2. Adding annotations to the called variants
+>    3. Reporting selected subsets of variants
+>    4. Generating reports of genes affected by variants
+>    5. Adding additional annotations to the gene-centered report
+
+
 
 # Quality control and mapping of NGS reads
 
@@ -90,10 +140,10 @@ In addition to merely calling variants, *somatic variant calling* tries to disti
 
 Dedicated somatic variant callers can perform this classification on statistical grounds, but the interpretation of any list of variants (somatic, germline or LOH) also depends crucially on rich genetic and cancer-specific variant and gene annotations.
 
-Some **Key points** to consider:
-
-* Follow best practices for read mapping, quality control and mapped reads post-processing to minimize false-positive variant calls.
-* Use a dedicated somatic variant caller to call variants and to classify them into somatic, germline and LOH event variants on statistical grounds.
-* Annotations and queries based on variant properties add relevance to variant and gene reports.
-* A framework like **GEMINI** is very helpful for managing, annotating and querying lists of variants in a flexible way.
-* Prefer public, free annotation sources to foster reproducibility and information sharing.
+> Some **Key points** to consider:
+>
+> * Follow best practices for read mapping, quality control and mapped reads post-processing to minimize false-positive variant calls.
+> * Use a dedicated somatic variant caller to call variants and to classify them into somatic, germline and LOH event variants on statistical grounds.
+> * Annotations and queries based on variant properties add relevance to variant and gene reports.
+> * A framework like **GEMINI** is very helpful for managing, annotating and querying lists of variants in a flexible way.
+> * Prefer public, free annotation sources to foster reproducibility and information sharing.
