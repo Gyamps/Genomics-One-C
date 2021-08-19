@@ -29,8 +29,8 @@ We are hoping this provide the insight into the genetic events driving tumor for
 
 > In this tutorial, we will cover:
 >
-> 1. [Data Preparation](#identification-of-somatic-and-germline-variants-from-tumor-and-normal-sample-pairs)
->    1. Get data
+> 1. [Data Preparation](#data-preparation)
+>    1. [Get data](#get-data)
 > 2. [Quality control and mapping of NGS reads](#quality-control-and-mapping-of-NGS-reads)
 >    1. [Quality control](#quality-control)
 >    2. [Read trimming and filtering](#read-trimming-and-filtering)
@@ -50,6 +50,135 @@ We are hoping this provide the insight into the genetic events driving tumor for
 >    5. Adding additional annotations to the gene-centered report
 
 
+
+# Data Preparation
+
+> We must first upload and prepare some input data for analysis. The sequencing reads we'll be looking at come from real-world data from a cancer patient's tumor and normal tissue samples. However, for the sake of analysis speed, the original data has been downsampled to include only reads from human chromosomes 5, 12, and 17.
+
+
+
+## Get data
+
+### Hands-on: Data upload
+
+1. Create a new history for this tutorial and give it a meaningful name. eg. *Identification of somatic and germline variants from tumor and normal sample pairs (Genomics-One-C)*
+
+    > :bulb:**Tip: Creating a new history**
+    >
+    > Click the :heavy_plus_sign: icon at the top of the history panel to the right of your screen.
+    >
+    > If the :heavy_plus_sign: is missing:
+    >
+    > 2. Click on the :gear: icon (**History options**) on the top of the history panel
+    > 2. Select the option **Create New** from the menu
+
+   > :bulb:**Tip: Renaming a history**
+   >
+   > 1. Click on **Unnamed history** (or the current name of the history)
+   >
+   >    (**Click to rename history**) at the top of your history panel
+   >
+   > 2. Type the new name
+   >
+   > 3. Press **`Enter`**
+
+2. Import the following four files from [Zenodo](https://zenodo.org/record/2582555):
+
+   >```
+   >https://zenodo.org/record/2582555/files/SLGFSK-N_231335_r1_chr5_12_17.fastq.gz
+   >https://zenodo.org/record/2582555/files/SLGFSK-N_231335_r2_chr5_12_17.fastq.gz
+   >https://zenodo.org/record/2582555/files/SLGFSK-T_231336_r1_chr5_12_17.fastq.gz
+   >https://zenodo.org/record/2582555/files/SLGFSK-T_231336_r2_chr5_12_17.fastq.gz
+   >```
+
+   where the first two files represent data from a patient's normal tissue's forward and reverse reads sequences, and the last two files represent data from the same patient's tumor tissue.
+
+   Alternatively, the same files may be available on your Galaxy server via a shared data library (ask your instructor), in which case you should import the data directly from there.
+
+   >  :bulb:**Tip: Importing via links**
+   >
+   > * ​	Copy the link location
+   > * Open the Galaxy Upload Manager (on the top-left of the tool panel)
+   > * Select _**Paste/Fetch Data**_
+   > * Paste the link into the text field
+   > * Change _**Type (set all)**_: from “Auto-detect” to <span style='color:red'>`fastqsanger.gz`</span>
+   > * Press _**Start**_
+   > * _**Close**_ the window
+   > * By default, Galaxy uses the URL as the name, so rename the files with a more useful name.
+
+   > :bulb:**Tip: Importing data from a data library**
+   >
+   >    	As an alternative to uploading the data from a URL or your computer, the files may also have been made available from a shared data _library_:
+   >
+   > * Go into _**Shared data**_ (top panel) then _**Data libraries**_
+   > * Find the correct folder (ask your instructor)
+   > * Select the desired files
+   > * Click on the _**To History**_ button near the top and select _**as Datasets**_ from the dropdown menu
+   > * In the pop-up window, select the history you want to import the files to (or create a new one)
+   > * Click on _**Import**_
+
+   
+
+3. Check that all newly created datasets in your history have the correct datatypes assigned, and correct any missing or incorrect datatype assignment.
+
+   > :bulb:**Tip: Changing the datatype**
+   >
+   > * Click on the _**pencil icon**_ for the dataset to edit its attributes
+   > * In the central panel, click on the galaxy-chart-select-data _**Datatypes**_ tab on the top
+   > * Select <span style='color:red'>`fastqsanger.gz`</span>
+   > * Click the _**Change datatype**_ button
+
+
+
+4. Rename the datasets and tag them appropriately.
+
+   When you upload a dataset via a link, Galaxy will use the link address as the dataset name, which you should probably shorten to just the file names
+
+   > :bulb:**Tip: Renaming a dataset**
+   >
+   > * Click on the galaxy-pencil _**pencil icon**_ for the dataset to edit its attributes
+   > * In the central panel, change the _**Name**_ field
+   > * Click the _**Save**_ button
+
+   A large portion of the analysis in this tutorial will consist of identical steps performed in parallel on normal and tumor tissue data.
+
+   Galaxy supports dataset tags to make it easier to remember which dataset represents which branch of an analysis in a linear history. In particular, if you add a tag beginning with <span style='color:red'>`#`</span> to any dataset, that tag will automatically propagate to any new dataset derived from the tagged dataset.
+
+   > :bulb:**Tip: Adding a tag**
+   >
+   > * Click on the dataset
+   > * Click on **Edit dataset tags**
+   > * Add a tag starting with <span style='color:red'>`#`</span>
+   > * Tags starting with <span style='color:red'>`#`</span> will be automatically propagated to the outputs of tools using this dataset.
+   > * Check that the tag is appearing below the dataset name
+
+   Before we begin our analysis, it is a good idea to tag the two fastq datasets representing normal tissue with, for example, <span style='color:red'>`#normal`</span> and the two datasets representing tumor tissue with, for example, <span style='color:red'>`#tumor`</span>.
+
+
+
+5. Import the reference genome with the <span style='color:red'>`hg19`</span> version of the sequences of human chromosomes 5, 12 and 17:
+
+   > ```english
+   > https://zenodo.org/record/2582555/files/hg19.chr5_12_17.fa.gz
+   > ```
+
+   In the import dialog, make sure to select <span style='color:red'>`fasta`</span>  as the datatype.
+
+   > **Shortcut**
+   >
+   > ```
+   > You can skip this step if the Galaxy server you're using has a hg19 version of the human reference genome with prebuilt indexes for bwa-mem and samtools (check the tools Map with BWA-MEM tool and VarScan Somatic tool to see if a hg19 version is listed as an option under "(Using) reference genome").
+   > ```
+
+   Alternatively, load the dataset from a shared data library.
+
+   
+
+6. Rename the reference genome
+
+   The reference genome you imported above came as a compressed file, but Galaxy unpacked it to plain <span style='color:red'>`fasta`</span>  format based on your datatype selection. You might want to remove the <span style='color:red'>`.gz`</span>  suffix from the dataset name now.
+
+   
 
 # Quality control and mapping of NGS reads
 
