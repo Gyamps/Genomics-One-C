@@ -50,6 +50,8 @@ Now, having generated a high-quality set of mapped read pairs, we can proceed to
 
      * *"reference genome"*: <span style='color:red'><mark>**Human: hg19**</mark></span> (or a similarly named choice)
 
+     
+   
      > ### Using the imported <span style='color:red'><mark>**hg19**</mark></span> sequence
      >
      > In the event you have imported the <span style='color:red'><mark>**hg19**</mark></span> sequence as a fasta dataset into your history, you could instead:
@@ -79,7 +81,7 @@ Now, having generated a high-quality set of mapped read pairs, we can proceed to
        During post-processing, we have filtered our reads for ones with a mapping quality of at least one, but **CalMD** may have lowered some mapping qualities to zero afterwards.
 
      Leave all other settings in this section at their default values.
-
+   
    * *"Settings for Posterior Variant Filtering"*: <span style='color:red'>**Use default values**</span> 
 
 # Conclusion
