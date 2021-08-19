@@ -42,9 +42,9 @@ We hope that this will provide insight into the genetic events that are driving 
 >    4. [Recalibrate read mapping qualities](#recalibrate-read-mapping-qualities)
 >    5. [Refilter reads based on mapping quality](#refilter-reads-based-on-mapping-quality)
 > 4. [Variant calling and classification](#variant-calling-and-classification)
-> 5. Variant annotation and reporting
->    1. Get data
->    2. Adding annotations to the called variants
+> 5. [Variant annotation and reporting](#variant-annotation-and-reporting)
+>    1. [Get data](#get-data)
+>    2. [Adding annotations to the called variants](#adding-annotations-to-the-called-variants)
 >    3. Reporting selected subsets of variants
 >    4. Generating reports of genes affected by variants
 >    5. Adding additional annotations to the gene-centered report
@@ -490,7 +490,7 @@ We can now proceed to variant calling after we have generated a high-quality set
 
      
    
-     > ### Using the imported <span style='color:red'>`hg19`</span> sequence
+     > **Using the imported <span style='color:red'>`hg19`</span> sequence**
      >
      > In the event you have imported the <span style='color:red'>`hg19`</span> sequence as a fasta dataset into your history, you could instead:
      >
@@ -521,6 +521,96 @@ We can now proceed to variant calling after we have generated a high-quality set
      Leave all other settings in this section at their default values.
    
    * *"Settings for Posterior Variant Filtering"*: <span style='color:red'>`Use default values`</span> 
+
+
+
+# Variant annotation and reporting
+
+This tutorial will make use of variant and gene annotations from a variety of sources. The tools we'll be using in this section will handle the majority of these for us, but we'll need to import data from four different sources into Galaxy separately:
+
+* variant annotations from [Cancer Hotspots](https://www.cancerhotspots.org/)
+* variant and gene information from the [Cancer Biomarkers database](https://www.cancergenomeinterpreter.org/biomarkers) of the Cancer Genome Interpreter (CGI) project
+* variant and gene information from the [CIViC](https://civicdb.org/) database
+* variant annotations from [dbSNP](https://www.ncbi.nlm.nih.gov/snp)
+* lists of genes annotated with the keywords *proto-oncogene* or *tumor suppressor* at [UniProt](https://www.uniprot.org/)
+
+Each of these annotation sets has been released in the public domain or under a free data license, allowing you to use them not only for this tutorial but also for other purposes.
+
+We generated a set of new data files tailored to the requirements of the workflow of this tutorial using the data downloaded from each of these sites and made them available through Zenodo, once again under a free data license.
+
+## Get data
+
+#### Hands-on: Data upload
+
+1. Import the following **variant annotation files** from [Zenodo](https://zenodo.org/record/2581873):
+
+   > ```
+   > https://zenodo.org/record/2581873/files/hotspots.bed
+   > https://zenodo.org/record/2581873/files/cgi_variant_positions.bed
+   > https://zenodo.org/record/2581873/files/01-Feb-2019-CIVic.bed
+   > https://zenodo.org/record/2582555/files/dbsnp.b147.chr5_12_17.vcf.gz
+   > ```
+
+   Make sure you select <span style='color:red'>`bed`</span> as the datatype for the first three files and <span style='color:red'>`vcf`</span> for the last file.
+
+   Alternatively, add the files from a shared data library on your Galaxy server instance.
+
+2. Import some **gene-level annotation files** from [Zenodo](https://zenodo.org/record/2581881):
+
+   > ```
+   > https://zenodo.org/record/2581881/files/Uniprot_Cancer_Genes.13Feb2019.txt
+   > https://zenodo.org/record/2581881/files/cgi_genes.txt
+   > https://zenodo.org/record/2581881/files/01-Feb-2019-GeneSummaries.tsv
+   > ```
+
+   and make sure you select <span style='color:red'>`tabular`</span> as their datatype, or add them from the shared data library.
+
+3. Download **SnpEff functional genomic annotations**
+
+   > **Shortcut**
+   >
+   > If the Galaxy server you're using has <span style='color:red'>`Homo sapiens: hg19`</span> as a locally installed snpEff database, you can skip this step. To see if this is the case, use the **SnpEff eff:wrench:** tool tool under Genome source.
+
+   Use **SnpEff Download:wrench:** tool to download genome annotation database <span style='color:red'>`hg19`</span>.
+
+4. Check that all new datasets' datatypes have been correctly set, and change them if necessary. You may also want to shorten the names of some of the datasets.
+
+## Adding annotations to the called variants
+
+### Adding functional genomic annotations
+
+Certainly, not all variations are created equal. Many may be silent mutations with no effect at the amino acid level, while a few may disrupt a protein's coding sequence by introducing a premature stop codon or a frameshift. Of course, knowing which gene is affected by a variant is also important. Functional genomic annotations of this type can be added to a VCF dataset of variants with *SnpEff*.
+
+#### Hands-on: Adding annotations with SnpEff
+
+1. Run **SnpEff eff:wrench::gear:** with the following parameters:
+
+   * *"Sequence changes (SNPs, MNPs, InDels)"*: the output of **VarScan somatic:wrench:**
+
+   * *"Input format"*: <span style='color:red'>`VCF`</span>
+
+   * *"Output format"*: <span style='color:red'>`VCF (only if input is VCF)`</span>
+
+   * *"Genome source"*: <span style='color:red'>`Locally installed reference genome`</span>
+
+     * *"Genome"*: <span style='color:red'>`Homo sapiens: hg19`</span> (or a similarly named option)
+
+     > **Using the imported <span style='color:red'>`hg19`</span> SnpEff genome database**
+     >
+     > If you have imported the <span style='color:red'>`hg19`</span> SnpEff genome database into your history instead:
+     >
+     > * *"Genome source"*: <span style='color:red'>`Downloaded snpEff database in your history`</span>
+     >   * *"SnpEff4.3 Genome Data"*: your imported <span style='color:red'>`hg19`</span> SnpEff dataset.
+
+   * *"Produce summary Stats"*: <span style='color:red'>`No`</span>
+
+### Adding genetic and clinical evidence-base annotations
+
+Other interesting aspects of a variant include whether the variant has previously been observed in the human population and, if so, at what frequency. We would also like to know if a variant is known to be associated with specific diseases. To move forward with this type of genetic and clinical evidence-based annotations, we will convert our list of variants into a database that can be processed more efficiently than a VCF dataset. We will use the GEMINI tool suite for this task as well as any future work with variants.
+
+#### Hands-on: Creating a GEMINI database from a variants dataset
+
+1. Run 
 
 # Conclusion
 
