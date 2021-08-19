@@ -29,13 +29,13 @@ We are hoping this provide the insight into the genetic events driving tumor for
 
 > In this tutorial, we will cover:
 >
-> 1. [Data Preparation](#introduction-of-somatic-and-germline-variants-from-tumor-and-normal-sample-pairs)
+> 1. [Data Preparation](#identification-of-somatic-and-germline-variants-from-tumor-and-normal-sample-pairs)
 >    1. Get data
 > 2. [Quality control and mapping of NGS reads](#quality-control-and-mapping-of-NGS-reads)
 >    1. [Quality control](#quality-control)
 >    2. Read trimming and filtering
 >    3. Read mapping
-> 3. [Mapped reads postprocessing](#introduction-of-somatic-and-germline-variants-from-tumor-and-normal-sample-pairs)
+> 3. [Mapped reads postprocessing](#identification-of-somatic-and-germline-variants-from-tumor-and-normal-sample-pairs)
 >    1. Filtering on mapped reads properties
 >    2. Removing duplicate reads
 >    3. Left-align reads around indels
