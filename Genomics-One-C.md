@@ -33,15 +33,15 @@ We are hoping this provide the insight into the genetic events driving tumor for
 >    1. Get data
 > 2. [Quality control and mapping of NGS reads](#quality-control-and-mapping-of-NGS-reads)
 >    1. [Quality control](#quality-control)
->    2. Read trimming and filtering
->    3. Read mapping
-> 3. [Mapped reads postprocessing](#identification-of-somatic-and-germline-variants-from-tumor-and-normal-sample-pairs)
->    1. Filtering on mapped reads properties
->    2. Removing duplicate reads
->    3. Left-align reads around indels
->    4. Recalibrate read mapping qualities
->    5. Refilter reads based on mapping qualities
-> 4. Variant calling and classification
+>    2. [Read trimming and filtering](#read-trimming-and-filtering)
+>    3. [Read mapping](#read-mapping)
+> 3. [Mapped reads postprocessing](#mapped-reads-postprocessing)
+>    1. [Filtering on mapped reads properties](#filtering-on-mapped-reads-properties)
+>    2. [Removing duplicate reads](#removing-duplicate-reads)
+>    3. [Left-align reads around indels](#left-align-reads-around-indels)
+>    4. [Recalibrate read mapping qualities](#recalibrate-read-mapping-qualities)
+>    5. [Refilter reads based on mapping qualities](#refilter-reads-based-on-mapping-qualities)
+> 4. [Variant calling and classification](#variant-calling-and-classification)
 > 5. Variant annotation and reporting
 >    1. Get data
 >    2. Adding annotations to the called variants
@@ -59,9 +59,7 @@ It is imperative to ensure that the data used for analysis is of good quality pr
 >
 > If you would like to explore the topics of quality control and read mapping in detail, you should take a look at the separate [Quality Control](https://training.galaxyproject.org/training-material/topics/sequence-analysis/tutorials/quality-control/tutorial.html) and [Mapping](https://training.galaxyproject.org/training-material/topics/sequence-analysis/tutorials/mapping/tutorial.html) tutorials. Here, we will only illustrate the concrete steps necessary for quality control and read mapping of our particular datasets.
 
-* We shall proceed to inspect the FASTQ files by clicking on the eye icon of the galaxy platform. Ideally, each read in our file should have **four** lines.
-* The first lines which begins with "**@**" symbol has a description of the read, while the second line had the actual nucleic acid sequence. 
-* The third and fourth lines contained a "**+**" symbol and a string of characters representation of the quality scores associated with each base of the nucleic sequence, respectively.
+
 
 ## Quality control
 
@@ -74,19 +72,284 @@ It is imperative to ensure that the data used for analysis is of good quality pr
      > Tip: Select multiple datasets
      >
      > 1. Click on **Multiple datasets**
-     > 2. Select several files by keeping the **Ctrl** (or **COMMAND**) key pressed and clicking on the files of interest
+     > 2. Select several files by keeping the <span style='color:black'>Ctrl</span> (or <span style='color:BLACK'>`COMMAND`</span>) key pressed and clicking on the files of interest
 
-     8 new datasets (one with the calculated raw data, another one with an html report of the findings for each input dataset) wil get added to your history after you run this job.
+     _8 new datasets (one with the calculated raw data, another one with an html report of the findings for each input dataset) wil get added to your history after you run this job._
 
 2. Use **MultiQC** to aggregate the raw **FastQC** data of all four input datasets into one report
 
    * In *"Results"*
-     * *"Which tool was used to generate logs?"*: **FastQC**
+     * *"Which tool was used to generate logs?"*: <span style='color:red'>`FastQC`</span>
      * In *"FastQC output"*
-       * *"Type of FastQC output?"*: **Raw data**
+       * *"Type of FastQC output?"*: <span style='color:red'>`Raw data`</span>
        * *"FastQC output"*: all four *RawData* outputs of **FastQC** 
 
 3. Inspect the *Webpage* output produced by the tool
+
+## Read trimming and filtering
+
+We will apply read trimming and filtering albeit the relatively good overall quality of the raw reads to see if we can improve things still a bit, but also to demonstrate the general concept.
+
+#### **Hands-on: Read trimming and filtering of the normal tissue reads**
+
+1. Run the **Trimmomatic** tool to trim and filter the normal tissue reads
+
+   - *“Single-end or paired-end reads?”*: <span style='color:red'>`Paired-end (two separate input files)`</span>
+
+     This makes the tool treat the forward and reverse reads simultaneously.
+
+     - *“Input FASTQ file (R1/first of pair)”*: the forward reads (r1) dataset of the normal tissue sample
+
+     - *“Input FASTQ file (R2/second of pair)”*: the reverse reads (r2) dataset of the normal tissue sample
+
+   - *“Perform initial ILLUMINACLIP step?”*: <span style='color:red'>`Yes`</span>
+
+     - *Select standard adapter sequences or provide custom?”*: <span style='color:red'>`Standard`</span>
+
+       - *"Adapter sequences to use”*: <span style='color:red'>`TrueSeq3 (paired-ended, for MiSeq and HiSeq)`</span>
+
+     - *“Maximum mismatch count which will still allow a full match to be  performed”*: <span style='color:red'>`2`</span>
+
+     - *“How accurate the match between the two ‘adapter ligated’ reads must  be for PE palindrome read alignment”*: <span style='color:red'>`30`</span>
+
+     - *“How accurate the match between any adapter etc. sequence must be  against a read”*: <span style='color:red'>`10`</span>
+
+     - *“Minimum length of adapter that needs to be detected (PE specific/  palindrome mode)”*: <span style='color:red'>`8`</span>
+
+       *“Always keep both reads (PE specific/palindrome mode)?”*: <span style='color:red'>`Yes`</span>
+
+   These parameters are used to cut ILLUMINA-specific adapter sequences from the reads.
+
+   - In *“Trimmomatic Operation”*
+     - In *“1: Trimmomatic Operation”*
+       - *“Select Trimmomatic operation to perform”*: <span style='color:red'>`Cut the specified number of bases from the start of the read (HEADCROP)`</span>
+         - *“Number of bases to remove from the start of the read”*: <span style='color:red'>`3`</span>
+     - “Insert Trimmomatic Operation”*
+     - In *“2: Trimmomatic Operation”*
+       - *“Select Trimmomatic operation to perform”*: <span style='color:red'>`Cut bases off the end of a read, if below a threshold quality (TRAILING)`</span>
+         - *“Minimum quality required to keep a base”*: <span style='color:red'>`10`</span>
+     - “Insert Trimmomatic Operation”*
+     - In *“3: Trimmomatic Operation”*
+       - *“Select Trimmomatic operation to perform”*: <span style='color:red'>`Drop reads below a specified length (MINLEN)`</span>
+         - *“Minimum quality required to keep a base”*: <span style='color:red'>`25`</span>
+
+   These three trimming and filtering operations will be applied to the reads in the given order after adapter trimming.
+
+   > Running this job will generate four output datasets:
+   >
+   > - *two for the trimmed forward and reverse reads that still have a proper mate in the other dataset*.
+   > - *two more datasets of orphaned forward and reverse reads, for which the corresponding mate got dropped because of insufficient length after trimming; when you inspect these two files, however, you should find that they are empty because none of our relatively high quality reads got trimmed that excessively. You can delete the two datasets to keep your history more compact*.
+
+
+
+## Read Mapping
+
+#### Hands-on: Read Mapping
+
+1. Use **Map with BWA-MEM** Tool: to map the reads from the **normal tissue** sample to the reference genome      
+
+   - *“Will you select a reference genome from your history or use a built-in index?”*:  <span style='color:red'>`Use a built-in genome`</span>
+
+     - *“Using reference genome”*: <span style='color:red'>`Human: hg19`</span> (or a similarly named option)
+
+       >### Using the imported <span style='color:red'>`hg19`</span> sequence
+       >
+       >In the event you have imported the <span style='color:red'>`hg19`</span> sequence as a fasta dataset into your history, you could instead:
+       >
+       >* *"Will you select a reference genome from your history or use a built-in genome?"*: <span style='color:red'>`Use a genome from the history`</span> 
+       >
+       >* *"reference genome"*: your imported <span style='color:red'>`hg19`</span> fasta dataset.
+
+
+​     
+
+   - “Single or Paired-end reads”*: <span style='color:red'>`Paired`</span> 
+
+     * *“Select first set of reads”*: the trimmed  forward reads (r1) dataset of the **normal tissue** sample; output of **Trimmomatic**
+     * *“Select second set of reads”*: the trimmed reverse reads (r2) dataset of the **normal tissue** sample; output of **Trimmomatic**
+
+   - *“Set read groups information?”*: <span style='color:red'>`Set read groups (SAM/BAM specification)`</span>
+     - *“Auto-assign”*: <span style='color:red'>`No`</span>
+       - *“Read group identifier (ID)”*: <span style='color:red'>`231335`</span> (this value being taken from the original name of the normal tissue input files)
+     - *“Auto-assign”*: <span style='color:red'>`No`</span>
+       - *“Read group sample name (SM)”*: <span style='color:red'>`Normal`</span>
+
+   > **Tip**: *In general, you are free to choose ID and SM values to your liking, but the ID should unambiguously identify the sequencing run that produced the reads, while the SM value should identify the biological sample.*
+
+2. Use **Map with BWA-MEM** to map the reads from the **tumor tissue** sample,      
+
+   - *“Will you select a reference genome from your history or use a built-in index?”*: <span style='color:red'>`Use a built-in genome`</span>
+
+     - *“Using reference genome”*: <span style='color:red'>`Human: hg19`</span> (or a similarly named option)
+
+     Adjust these settings as before if you are using the imported reference genome.
+
+   - *“Single or Paired-end reads”*: <span style='color:red'>`Paired`</span>
+
+     - *“Select first set of reads”*: the trimmed forward reads (r1) dataset of the **tumor tissue** sample; output of **Trimmomatic**
+     - *Select second set of reads”*: the reverse reads (r2) dataset of the **tumor tissue** sample; output of **Trimmomatic**
+
+   - *“Set read groups information?”*: <span style='color:red'>`Set read groups (SAM/BAM specification)`</span>
+
+     - *“Auto-assign”*: `No`
+       - *Read group identifier (ID)”*: `231336` (this value, again, being taken from the original name of the tumor tissue input files)
+     - *“Auto-assign”*: <span style='color:red'>`No`</span>
+       * *"Read group sample name (SM)"*: <span style='color:red'>`Tumor`</span>
+
+
+
+
+
+# Mapped reads postprocessing
+
+To ensure that we base our variant analysis only on unambiguous, high-quality read mappings we will do some postprocessing next.
+
+## Filtering on mapped reads properties
+
+To produce new filtered BAM datasets with only those reads retained that have been mapped to the reference successfully, have a minimal mapping quality of 1, and for which the mate read has also been mapped:
+
+### Hands-on: Filtering for mapping status and quality
+
+1. Run **Filter BAM datasets on a variety of attributes** with the following parameters:
+
+   -  *“BAM dataset(s) to filter”*: mapped reads datasets from the normal *and* the tumor tissue data, outputs of **Map with BWA-MEM** 
+
+   -  In *“Condition”*:
+
+   -  In *“1: Condition”*:
+
+      - In *“Filter”*:
+
+        - In *“1: Filter”*: 
+
+          - *“Select BAM property to filter on”*: <span style='color:red'>`mapQuality`</span>
+        - ''*Filter on read mapping quality (phred scale)”*: <span style='color:red'>`>=1`</span>
+        - In *“2: Filter”*:
+             - *“Select BAM property to filter on”*: <span style='color:red'>`isMapped`</span> 
+               - *“Selected mapped reads”*: <span style='color:red'>`Yes`</span>
+        - Click on *“Insert Filter”*
+        - In *“3: Filter”*:                  
+             - *“Select BAM property to filter on”*: <span style='color:red'>`isMateMapped`</span>
+               - *“Select reads with mapped mate”*: <span style='color:red'>`Yes`</span>
+
+When you configure multiple filters within one condition, reads have to pass *all* the filters to be retained in the output. The above settings, thus, retain only read pairs, for which both mates are mapped.
+
+Note that filtering for a minimal mapping quality is not strictly necessary. Most variant callers (including **VarScan somatic**, which we will be using later) have an option for using only reads above a certain mapping quality. In this section, however, we are going to process the retained reads further rather extensively so it pays off in terms of performance to eliminate reads we do not plan to use at an early step.
+
+*“Would you like to set rules?”*: <span style='color:red'>`No`</span>
+
+> This will result in two new datasets, one for each of the normal and tumor data.
+
+> **Tools for filtering BAM datasets** 
+>
+> Under the hood, **Filter SAM or BAM, output SAM or BAM** tool uses the <span style='color:red'>`samtools view`</span> command line tool, while **Filter BAM datasets on a variety of attributes** tool uses <span style='color:red'>`bamtool filter`</span>. Whatever the BAM filtering task, you should be able to perform it in Galaxy with one of these two tools.
+
+
+
+## Removing duplicate reads
+
+### Hands-on: Remove duplicates
+
+1. Run **RmDup** Tool: with the following parameters:
+   - *“BAM file”*: filtered reads datasets from the normal *and* the tumor tissue data; the outputs of **Filter SAM or BAM**
+   - *“Is this paired-end or single end data”*: <span style='color:red'>`BAM is paired-end`</span>
+   - *“Treat as single-end”*: <span style='color:red'>`No`</span>
+
+> Again, this will produce two new datasets, one for each of the normal and tumor data.
+
+## Left-align reads around indels
+
+### Hands-on: Left-align
+
+1. Run **BamLeftAlign** Tool: with the following parameters:
+   - *“Choose the source for the reference genome”*: <span style='color:red'>`Locally cached`</span> 
+     - *“BAM dataset to re-align”*: your filtered and deduplicated reads datasets from the normal *and* the tumor tissue data; the outputs of **RmDup**    
+     - *“Using reference genome”*: <span style='color:red'>`Human: hg19`</span> (or a similarly named choice)
+   - *“Maximum number of iterations”*: <span style='color:red'>`5`</span>
+
+> **Using the imported `hg19` sequence**
+>
+> If you have imported the <span style='color:red'>`hg19`</span> sequence as a fasta dataset into your history instead:
+>
+> - *“Choose the source for the reference genome”*: <span style='color:red'>`History`</span>
+>   - *“Using reference file”*: your imported <span style='color:red'>`hg19`</span> fasta dataset
+
+> As before, this will generate two new datasets, one for each of the normal and tumor data.
+
+
+
+## Recalibrate read mapping qualities
+
+### Hands-on: Recalibrate read quality scores
+
+1. Run **CalMD** Tool:with the following parameters:
+
+   - *“BAM file to recalculate”*: the left-aligned datasets from the normal and the tumor tissue data; the outputs of **BamLeftAlign**
+
+   - *“Choose the source for the reference genome”*: <span style='color:red'>`Use a built-in genome`</span>
+
+     - *“Using reference genome”*: <span style='color:red'>`Human: hg19`</span> (or a similarly named choice)
+
+       > **Using the imported <span style='color:red'>`hg19`</span> sequence    **
+       >
+       > If you have imported the <span style='color:red'>`hg19`</span> sequence as a fasta dataset into your history instead:
+       >
+       > - *“Choose the source for the reference genome”*: <span style='color:red'>`Use a genome from the history`</span>
+       >   - *“Using reference file”*: your imported <span style='color:red'>`hg19`</span> fasta dataset.
+
+       
+
+   - *“Do you also want BAQ (Base Alignment Quality) scores to be calculated?”*: <span style='color:red'>`No`</span>
+
+     The *VarScan somatic* tool that we are going to use for calling variants at the next step is typically used in combination with unadjusted base quality scores because the general opinion is that the base quality downgrades performed by *CalMD* and other tools from the *samtools* suite of tools are too severe for *VarScan* to retain good sensitivity. We are sticking with this practice in this tutorial.
+
+     > **Using adjusted base quality scores**
+     >
+     > If, for your own data, you would like to experiment with adjusted base quality scores, it is important to understand that *VarScan somatic* will only make use of the adjusted scores if they are incorporated directly into the read base qualities of a BAM input dataset, but not if they are written to the dataset separately.
+     >
+     > - Hence, should you ever decide to use:
+     >
+     >   - *“Do you also want BAQ (Base Alignment Quality) scores to be calculated?”*: <span style='color:red'>`Yes, run BAQ calculation`</span> 
+     >
+     >     and you want this setting to affect downstream variant calling with *VarScan somatic*, make sure you also set then:
+     >
+     >     - *“Use BAQ to cap read base qualities”*: <span style='color:red'>`Yes`</span>
+     >
+     >   Please also note that BAQ scores are quite expensive to calculate so be prepared to see a substantial (up to 10x!) increase in job run time  when enabling it.
+     >
+
+     
+
+   - *“Additional options”*: <span style='color:red'>`Advanced options`</span>
+
+     - *“Change identical bases to ‘=’“*: <span style='color:red'>`No`</span>
+
+     - *“Coefficient to cap mapping quality of poorly mapped reads”*: <span style='color:red'>`50`</span>
+
+       This last setting is the real reason why we use CalMD at this point. It is an empirical, but well-established finding that the mapping quality of reads mapped with *bwa* should be capped this way before variant calling.
+
+> This will, once more, produce two new datasets, one for each of the normal and tumor data.
+
+
+
+## Refilter reads based on mapping quality
+
+During recalibration of read mapping qualities **CalMD** may have set some mapping quality scores to 255. This special value is reserved for *undefined* mapping qualities and is used by the tool when a recalibrated mapping quality would drop below zero. In other words, a value of 255 does not indicate a particularly good mapping score, but a really poor one. To remove such reads from the data:
+
+### Hands-on: Eliminating reads with undefined mapping quality
+
+1. Run **Filter BAM datasets on a variety of attributes** Tool: with the following parameters:
+
+   - *“BAM dataset(s) to filter”*: the recalibrated datasets from the normal and the tumor tissue data; the outputs of **CalMD**
+
+   - In *“Condition”*:
+
+   - In *“1: Condition”*:
+
+     - In *“Filter”*:
+
+       - *“Select BAM property to filter on”*: <span style='color:red'>`mapQuality`</span>
+- *“Filter on read mapping quality (phred scale)”*: <span style='color:red'>`>=254`</span> 
 
 # Variant Calling and Classification
 
@@ -96,43 +359,43 @@ Now, having generated a high-quality set of mapped read pairs, we can proceed to
 
 1. Run **VarScan somatic** with the following parameters:
 
-   * *"Will you select a reference genome from your history or use a built-in genome?"* :  <span style='color:red'><mark>**Use a built-in genome**</mark></span> 
+   * *"Will you select a reference genome from your history or use a built-in genome?"* :  <span style='color:red'>`Use a built-in genome`</span> 
 
-     * *"reference genome"*: <span style='color:red'><mark>**Human: hg19**</mark></span> (or a similarly named choice)
+     * *"reference genome"*: <span style='color:red'>`Human: hg19`</span> (or a similarly named choice)
 
      
    
-     > ### Using the imported <span style='color:red'><mark>**hg19**</mark></span> sequence
+     > ### Using the imported <span style='color:red'>`hg19`</span> sequence
      >
-     > In the event you have imported the <span style='color:red'><mark>**hg19**</mark></span> sequence as a fasta dataset into your history, you could instead:
+     > In the event you have imported the <span style='color:red'>`hg19`</span> sequence as a fasta dataset into your history, you could instead:
      >
-     > * *"Will you select a reference genome from your history or use a built-in genome?"*: <span style='color:red'><mark>**Use a genome from the history**</mark></span> 
+     > * *"Will you select a reference genome from your history or use a built-in genome?"*: <span style='color:red'>`Use a genome from the history`</span> 
      >
-     > * *"reference genome"*: your imported <span style='color:red'><mark>**hg19**</mark></span> fasta dataset.
+     > * *"reference genome"*: your imported <span style='color:red'>`hg19`</span> fasta dataset.
 
    * *"aligned reads from normal sample"*: the mapped and fully post-processed normal tissue dataset; one of the two outputs of filtering the **CalMD** outputs
 
    * *"aligned reads from tumor sample"*: the mapped and fully post-processed tumor tissue dataset; the other output of filtering the **CalMD** outputs.
 
-   * *"Estimated purity (non-tumor content) of normal sample"*: <span style='color:red'>**1**</span> 
+   * *"Estimated purity (non-tumor content) of normal sample"*: <span style='color:red'>`1`</span>
 
-   * *"Estimated purity (tumor content) of tumor sample"*: <span style='color:red'>**0.5**</span> 
+   * *"Estimated purity (tumor content) of tumor sample"*: <span style='color:red'>`0.5`</span> 
 
-   * *"Generate separate output datasets for SNP and indel calls?"*: <span style='color:red'>**No**</span> 
+   * *"Generate separate output datasets for SNP and indel calls?"*: <span style='color:red'>`No`</span> 
 
-   * *"Settings for Variant Calling"*: <span style='color:red'>**Customize settings**</span> 
+   * *"Settings for Variant Calling"*: <span style='color:red'>`Customize settings`</span> 
 
-     * *"Minimum base quality"*: <span style='color:red'>**28**</span> 
+     * *"Minimum base quality"*: <span style='color:red'>`28`</span> 
 
        We have seen, at the quality control step, that our sequencing data is of really good quality, and we have chosen not to downgrade base qualities at the quality scores recalibration step above, so we can increase the base quality required at any given position without throwing away too much of our data.
 
-     * *"Minimum mapping quality"*: <span style='color:red'>**1**</span> 
+     * *"Minimum mapping quality"*: <span style='color:red'>`1`</span> 
 
        During post-processing, we have filtered our reads for ones with a mapping quality of at least one, but **CalMD** may have lowered some mapping qualities to zero afterwards.
 
      Leave all other settings in this section at their default values.
    
-   * *"Settings for Posterior Variant Filtering"*: <span style='color:red'>**Use default values**</span> 
+   * *"Settings for Posterior Variant Filtering"*: <span style='color:red'>`Use default values`</span> 
 
 # Conclusion
 
