@@ -29,7 +29,7 @@ We hope that this will provide insight into the genetic events that are driving 
 
 > **Galaxy Server GEMINI tool(s) issue**
 >
-> We realized that the use of the *GEMINI tool*(s) which you will encounter as you get to the **Variant annotation and reporting** section was not available on the [usegalaxy.org](usegalaxy.org) server but instead on the [usegalaxy.eu](usegalaxy.eu) server hence, you will have to perform you tutorial on the latter server.
+> We realized that the use of the *GEMINI tool*(s) which you will encounter as you get to the **Variant annotation and reporting** section was not available on the [usegalaxy.org](https://usegalaxy.org) server but instead on the [usegalaxy.eu](https://usegalaxy.eu) server hence, you will have to perform you tutorial on the latter server.
 
 
 
