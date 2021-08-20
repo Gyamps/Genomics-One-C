@@ -27,6 +27,8 @@ Furthermore, in addition to acquiring somatic variants, tumor tissues may gain c
 
 We hope that this will provide insight into the genetic events that are driving tumor formation and growth in patients, as well as have prognostic and even therapeutic value by revealing variants known to affect drug resistance/sensitivity, tumor aggressiveness, *etc*.
 
+> Time estimation for this tutorial is approximately _**7 hours**_
+
 > **Galaxy Server GEMINI tool(s) issue**
 >
 > We realized that the use of the *GEMINI tool*(s) which you will encounter as you get to the **Variant annotation and reporting** section was not available on the [usegalaxy.org](https://usegalaxy.org) server but instead on the [usegalaxy.eu](https://usegalaxy.eu) server hence, you will have to perform you tutorial on the latter server.
