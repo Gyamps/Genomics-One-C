@@ -1092,10 +1092,11 @@ Dedicated somatic variant callers can perform this classification based on stati
 @NNyakundiM
 [@aneela](https://github.com/aneela)
 [@clementmlay](https://github.com/clementmlay)
-[@brenda](https://github.com/brenda)
+[@brenda](https://github.com/Brenda)
 @Njuguna.E
-[@kasturi](https://github.com/kasturi)
+[@kasturi](https://github.com/Kasturi)
 [@laurah](https://github.com/laurah)
+
 [@Adekemi](https://github.com/Adekemi)
 
 #### Github repo:
