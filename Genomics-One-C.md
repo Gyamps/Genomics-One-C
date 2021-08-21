@@ -14,16 +14,26 @@ If this is the case, healthy and tumor tissues may both have germline variants, 
 
 Furthermore, in addition to acquiring somatic variants, tumor tissues may gain chromosomal copies of heterozygous germline variants, i.e. homozygous state (duplication of one allelic copy accompanied by loss of the other), or lose, i.e. hemizygous state (if one allele is simply dropped).
 
-**Note: Only one of the two original alleles persists in the tumor.**
+> **Note: Only one of the two original alleles persists in the tumor.**
+>
+> This is known as *loss of heterozygozity* (LOH). Again, the detection of LOH events is based on a comparison of tumor and normal tissue data.
 
-This is known as *loss of heterozygozity* (LOH). Again, the detection of LOH events is based on a comparison of tumor and normal tissue data.
+> **Genomics-One-C's** tutorial is set out to:
+>
+> - Identify somatic and germline variants, as well as LOH variants, in a tumor and a normal sample from the same patient.
+> - Annotate the variant sites and the genes affected by them with content from general human genetic and cancer-specific databases.
 
-**Genomics-One-C's** tutorial is set out to:
 
-- Identify somatic and germline variants, as well as LOH variants, in a tumor and a normal sample from the same patient.
-- Annotate the variant sites and the genes affected by them with content from general human genetic and cancer-specific databases.
 
 We hope that this will provide insight into the genetic events that are driving tumor formation and growth in patients, as well as have prognostic and even therapeutic value by revealing variants known to affect drug resistance/sensitivity, tumor aggressiveness, *etc*.
+
+> Time estimation for this tutorial is approximately _**7 hours**_
+
+> **Galaxy Server GEMINI tool(s) issue**
+>
+> We realized that the use of the *GEMINI tool*(s) which you will encounter as you get to the **Variant annotation and reporting** section was not available on the [usegalaxy.org](https://usegalaxy.org) server but instead on the [usegalaxy.eu](https://usegalaxy.eu) server hence, you will have to perform you tutorial on the latter server.
+
+
 
 #### **Agenda**
 
@@ -47,7 +57,7 @@ We hope that this will provide insight into the genetic events that are driving 
 >    2. [Adding annotations to the called variants](#adding-annotations-to-the-called-variants)
 >    3. [Reporting selected subsets of variants](#reporting-selected-subsets-of-variants)
 >    4. [Generating reports of genes affected by variants](#generating-reports-of-genes-affected-by-variants)
->    5. Adding additional annotations to the gene-centered report
+>    5. [Adding additional annotations to the gene-centered report](#adding-additional-annotations-to-the-gene-centered-report)
 
 
 
@@ -919,9 +929,148 @@ Some of this data is included in every GEMINI database, but it's stored in a dis
 
 We must join the <span style='color:red'>`variants`</span> and <span style='color:red'>`gene_detailed`</span> tables in order to retrieve information from both tables in the same query. Such an operation is not possible with the <span style='color:red'>`Basic query constructor`</span> we've been using so far, and needs building the query in advanced mode.
 
+#### Hands-on: Turning query results into gene-centered reports
+
+1. Run **GEMINI query:wrench::gear:** in advanced mode by choosing
+
+   * *"Build GEMINI query using"*: <span style='color:red'>`Advanced query constructor`</span>
+
+   * *"The query to be issued to the database"*: <span style='color:red'>`SELECT v.gene, v.chrom, g.synonym, g.hgnc_id, g.entrez_id, g.rvis_pct, v.clinvar_gene_phenotype FROM variants v, gene_detailed g WHERE v.chrom = g.chrom AND v.gene = g.gene AND v.somatic_status = 2 AND v.somatic_p <= 0.05 AND v.filter IS NULL GROUP BY g.gene`</span>
+
+     > **Elements of the SQL query**
+     >
+     > The part between <span style='color:red'>`SELECT`</span> and <span style='color:red'>`FROM`</span> specifies which columns from which database tables we want to retrieve, while the part between <span style='color:red'>`FROM`</span> and <span style='color:red'>`WHERE`</span> specifies the database tables that need to be consulted and gives them simpler aliases (<span style='color:red'>`v`</span> becomes an alias for the <span style='color:red'>`variants`</span> table, <span style='color:red'>`g`</span> for the <span style='color:red'>`gene_detailed`</span> table), which we can then use throughout the query.
+     >
+     > The filter criteria we want to use are listed after <span style='color:red'>`WHERE`</span>. These criteria are nearly identical to those used in our previous somatic variants query, but because we are working with two tables instead of just one, we must specify which table the filter columns come from using table prefixes. Hence, <span style='color:red'>`somatic_status`</span> becomes <span style='color:red'>`v.somatic_status`</span>, and so on. Furthermore, we want to report corresponding information from the two tables, which is ensured by the additional criteria <span style='color:red'>`v.chrom = g.chrom`</span> and <span style='color:red'>`v.gene = g.gene`</span> (the SQL terminology is: we want to join the <span style='color:red'>`variants`</span> and <span style='color:red'>`gene_detailed`</span> tables on their <span style='color:red'>`chrom`</span> and <span style='color:red'>`gene`</span> columns).
+     >
+     > Finally, the <span style='color:red'>`GROUP BY`</span> clause specifies that we want to combine records affecting the same gene into one.
+
+   * *"Genotype filter expression"*: <span style='color:red'>`gt_alt_freqs.NORMAL <= 0.05 AND gt_alt_freqs.TUMOR >= 0.10`</span>
+
+     This remains unchanged from the previous somatic variants query.
+
+## Adding additional annotations to the gene-centered report
+
+Unfortunately, GEMINI annotate only allows you to add columns to a GEMINI database's variants table; there is no easy way to enrich the <span style='color:red'>`gene_detailed`</span> table with additional annotations. That is why, using more general-purpose Galaxy tools, we will now add such additional annotations to the tabular gene-centered report.
+
+Annotating the GEMINI tabular gene report is a two-step process in which we first combine the report and tabular annotation sources into a larger tabular dataset, from which we then remove redundant and unwanted columns while *rearranging* the remaining ones.
+
+**Step 1** consists of three separate *join* operations that pull in the annotations found in the three gene-based tabular datasets that you imported in the *Get Data* step of this section in a sequential fashion. To to this, we used the **Join two file** tool to add the information such as **UniProt cancer genes**, **CGI biomarkers** and **CIViC**.
+
+#### Hands-on: Join
+
+1. Use **Join two files:wrench::gear:** to add **UniProt cancer genes** information
+
+   * *“1st file”*: the GEMINI-generated gene report from the previous step
+
+   * *“Column to use from 1st file”*: <span style='color:red'>`Column: 1`</span>
+
+   * *“2nd file”*: the imported <span style='color:red'>`Uniprot_cancer_Genes`</span> dataset
+
+   * *“Column to use from 2nd file”*: <span style='color:red'>`Column: 1`</span>
+
+   * *“Output lines appearing in”*: <span style='color:red'>`Both 1st & 2nd file, plus unpairable lines from 1st file. (-a 1)`</span>
+
+     We obviously want to include a variant-affected gene in the final report even if it is not listed as a Uniprot cancer gene.
+
+   * *“First line is a header line”*: <span style='color:red'>`Yes`</span>
+
+   * *“Ignore case”*: <span style='color:red'>`No`</span>
+
+   * *“Value to put in unpaired (empty) fields”*: <span style='color:red'>`0`</span>
+
+     If you look at the <span style='color:red'>`Uniprot_Cancer_Genes`</span> dataset, you'll notice that it has two annotation columns: one that indicates whether a given gene is a proto-oncogene or not using <span style='color:red'>`1`</span> and <span style='color:red'>`0`</span>, and another that indicates tumor suppressor genes in the same way. To indicate the common case that a gene affected by a variant is neither a known proto-oncogene nor a tumor suppressor gene, we want to fill the corresponding two columns of the join result with <span style='color:red'>`0`</span>.
+
+2. Use **Join two files:wrench:**:gear: to add **CGI biomarkers** information
+
+   - *“1st file”*: the partially annotated dataset from the previous
+   - *“Column to use from 1st file”*: <span style='color:red'>`Column: 1`</span>
+   - *“2nd file”*: the imported <span style='color:red'>`cgi_genes`</span> dataset
+   - *“Column to use from 2nd file”*: <span style='color:red'>`Column: 1`</span>
+   - *“Output lines appearing in”*: <span style='color:red'>`Both 1st & 2nd file, plus unpairable lines from 1st file. (-a 1)`</span>
+   - *“First line is a header line”*: <span style='color:red'>`Yes`</span>
+   - *“Ignore case”*: <span style='color:red'>`No`</span>
+   - *“Value to put in unpaired (empty) fields”*: <span style='color:red'>`0`</span>
+
+   Inspect the input and the result dataset to make sure you understand what happened at this step.
+
+3. Use **Join two files:wrench:**:gear: to add gene information from **CIViC**
+
+   - *“1st file”*: the partially annotated dataset from step 2
+
+   - *“Column to use from 1st file”*: <span style='color:red'>`Column: 1`</span>
+
+   - *“2nd file”*: the imported <span style='color:red'>`GeneSummaries`</span> dataset
+
+   - *“Column to use from 2nd file”*: <span style='color:red'>`Column: 3`</span>
+
+     The gene column in the CIViC gene summaries annotation dataset is *not* the first one!
+
+   - *“Output lines appearing in”*: <span style='color:red'>`Both 1st & 2nd file, plus unpairable lines from 1st file. (-a 1)`</span>
+
+   - *“First line is a header line”*: <span style='color:red'>`Yes`</span>
+
+   - *“Ignore case”*: <span style='color:red'>`No`</span>
+
+   - *“Value to put in unpaired (empty) fields”*: <span style='color:red'>`.`</span>
+
+   Inspect the input and the result dataset to make sure you understand what happened at this step.
+
+Looking at the output datasets, the gene columns from each of the *join* operations was preserved from both input datasets. Furthermore, we had no control over the order in which columns were added to the report, and we couldn't exclude any columns.
+
+In **Step 2** of the report preparation process, we will address all of these issues and rearrange the data to produce a fully annotated gene report. The tool used is **Column arrange by header name**.
+
+#### Hands-on: Rearrange to get a fully annotated gene report
+
+1. Run **Column arrange by header name:wrench:**:gear: configured like this:
+   - *“file to rearrange”*: the final **Join** result dataset from step 3
+   - In *“Specify the first few columns by name”*
+     - In *“1: Specify the first few columns by name”*
+       - *“column”*: <span style='color:red'>`gene`</span>
+     - :heavy_plus_sign:*“Specify the first few columns by name”*
+     - In *“2: Specify the first few columns by name”*
+       - *“column”*: <span style='color:red'>`chrom`</span>
+     - :heavy_plus_sign:*“Specify the first few columns by name”*
+     - In *“3: Specify the first few columns by name”*
+       - *“column”*: <span style='color:red'>`synonym`</span>
+     - :heavy_plus_sign:*“Specify the first few columns by name”*
+     - In *“4: Specify the first few columns by name”*
+       - *“column”*: <span style='color:red'>`hgnc_id`</span>
+     - :heavy_plus_sign:*“Specify the first few columns by name”*
+     - In *“5: Specify the first few columns by name”*
+       - *“column”*: <span style='color:red'>`entrez_id`</span>
+     - :heavy_plus_sign:*“Specify the first few columns by name”*
+     - In *“6: Specify the first few columns by name”*
+       - *“column”*: <span style='color:red'>`rvis_pct`</span>
+     - :heavy_plus_sign:*“Specify the first few columns by name”*
+     - In *“7: Specify the first few columns by name”*
+       - *“column”*: <span style='color:red'>`is_OG`</span>
+     - :heavy_plus_sign:*“Specify the first few columns by name”*
+     - In *“8: Specify the first few columns by name”*
+       - *“column”*: <span style='color:red'>`is_TS`</span>
+     - :heavy_plus_sign:*“Specify the first few columns by name”*
+     - In *“9: Specify the first few columns by name”*
+       - *“column”*: <span style='color:red'>`in_cgi_biomarkers`</span>
+     - :heavy_plus_sign:*“Specify the first few columns by name”*
+     - In *“10: Specify the first few columns by name”*
+       - *“column”*: <span style='color:red'>`clinvar_gene_phenotype`</span>
+     - :heavy_plus_sign:*“Specify the first few columns by name”*
+     - In *“11: Specify the first few columns by name”*
+       - *“column”*: <span style='color:red'>`gene_civic_url`</span>
+     - :heavy_plus_sign:*“Specify the first few columns by name”*
+     - In *“12: Specify the first few columns by name”*
+       - *“column”*: <span style='color:red'>`description`</span>
+   - *“Discard unspecified columns”*: <span style='color:red'>`Yes`</span>
+
+> **Alternative tool suggestion**
+>
+> If your Galaxy server doesn't have the Column arrange tool, it almost certainly has the **Cut columns from a table tool**, which can be used as a stand-in. This tool, however, expects a comma-separated list of column indexes, such as <span style='color:red'>`c1,c2`</span> for the first and second columns, so you must first determine the column numbers of your columns of interest.
+>
+> Keep in mind that the suggested tool should not be confused with *Cut columns from a table (cut)*, which does not allow you to change the order of columns!
+
 # Conclusion
 
-In addition to simply calling variants, *somatic variant calling* attempts to distinguish *somatic mutations*, which are unique to tumor tissue, from *germline* mutations, which are shared by tumor and healthy tissue, and *loss-of-heterozygozygosity* events, which involve the loss of one of two alleles found at a biallelic site in healthy tissue, from tumor tissue.
+In addition to simply calling variants, *somatic variant calling* attempts to distinguish *somatic mutations*, which are unique to tumor tissue, from *germline* mutations, which are shared by tumor and healthy tissue, and *loss-of-heterozygosity* events, which involve the loss of one of two alleles found at a biallelic site in healthy tissue, from tumor tissue.
 
 Dedicated somatic variant callers can perform this classification based on statistics, but the interpretation of any list of variants (somatic, germline, or LOH) is also critically dependent on rich genetic and cancer-specific variant and gene annotations.
 
