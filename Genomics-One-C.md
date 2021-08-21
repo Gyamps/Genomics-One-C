@@ -1081,3 +1081,30 @@ Dedicated somatic variant callers can perform this classification based on stati
 > * Annotations and queries based on variant properties improve the usefulness of variant and gene reports.
 > * **GEMINI** is a very useful framework for managing, annotating, and querying lists of variants in a flexible manner.
 > * To encourage reproducibility and information sharing, prefer public, free annotation sources.
+
+
+
+### Names of contributors:
+
+#### Galaxy workflow:
+
+[@ernesto](https://github.com/ernesto) (TeamLead
+@NNyakundiM
+[@aneela](https://github.com/aneela)
+[@clementmlay](https://github.com/clementmlay)
+[@brenda](https://github.com/brenda)
+@Njuguna.E
+[@kasturi](https://github.com/kasturi)
+[@laurah](https://github.com/laurah)
+[@Adekemi](https://github.com/Adekemi)
+
+#### Github repo:
+
+[@Kwabena](https://github.com/Kwabena) (Lead)
+[@Tobibantu](https://github.com/Tobibantu)
+@Vincentabayomi
+@Paulah_Kings
+
+#### Graphics design:
+
+[@Tobibantu](https://github.com/Tobibantu)
